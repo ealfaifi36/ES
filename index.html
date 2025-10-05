@@ -13,78 +13,73 @@
       background: linear-gradient(to bottom right, #f0f4f8, #dbe9f4);
       direction: rtl;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
       color: #333;
       user-select: none;
+      margin: 0;
     }
     h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      margin-bottom: 20px;
       color: #2c3e50;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
-    input[type="file"], input[type="number"], button, select {
-      margin: 10px;
-      padding: 14px 18px;
-      font-size: 18px;
+    input[type="file"], input[type="number"], select {
+      margin: 10px auto;
+      padding: 16px;
+      font-size: 20px;
       border: 1px solid #ccc;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      width: 90%;
-      max-width: 400px;
-    }
-    button {
-      color: white;
-      background-color: #3498db;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    button:hover {
-      background-color: #2980b9;
+      width: 95%;
+      max-width: 500px;
+      display: block;
     }
     label {
       display: block;
       margin-top: 20px;
       font-weight: bold;
       color: #34495e;
-      font-size: 18px;
+      font-size: 20px;
     }
     #status {
       margin-top: 20px;
-      font-size: 18px;
+      font-size: 20px;
       color: #2c3e50;
     }
     .note {
-      font-size: 15px;
+      font-size: 16px;
       color: #7f8c8d;
       margin-top: 10px;
-    }
-    .invalid {
-      background-color: #ffe5e5;
-      border-color: #e74c3c;
     }
     #sheetSelectors {
       margin-top: 20px;
     }
-    @media (max-width: 600px) {
-      body {
-        padding: 20px;
-      }
-      h2 {
-        font-size: 24px;
-        flex-direction: column;
-      }
-      input, button, select {
-        font-size: 17px;
-        padding: 12px;
-      }
+    #buttonPanel {
+      position: fixed;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      background-color: #ecf0f1;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      box-shadow: -2px 2px 6px rgba(0,0,0,0.2);
+    }
+    #buttonPanel button {
+      font-size: 18px;
+      padding: 12px;
+      width: 160px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #buttonPanel button:hover {
+      background-color: #2980b9;
     }
     #splash {
       position: fixed;
@@ -97,9 +92,35 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
       color: #2c3e50;
       z-index: 9999;
+    }
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 26px;
+      }
+      input, select {
+        font-size: 18px;
+        padding: 14px;
+      }
+      #buttonPanel {
+        width: 100%;
+        right: auto;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        border-radius: 0;
+      }
+      #buttonPanel button {
+        flex: 1;
+        font-size: 16px;
+        padding: 10px;
+        margin: 5px;
+      }
     }
   </style>
 </head>
@@ -107,14 +128,16 @@
   <div id="splash">🧩 جاري تحميل الأداة...</div>
 
   <h2>أداة دمج أوراق Excel بسهولة وسرعة</h2>
-  <input type="file" id="fileInput" multiple accept=".xlsx,.csv"><br>
+  <input type="file" id="fileInput" multiple accept=".xlsx,.csv">
   <label for="sheetIndex">🔢 رقم الورقة المطلوب دمجها (اختياري):</label>
-  <input type="number" id="sheetIndex" min="1" placeholder="مثلاً: 1"><br>
+  <input type="number" id="sheetIndex" min="1" placeholder="مثلاً: 1">
   <div id="sheetSelectors"></div>
-  <button onclick="mergeFiles()">✅ دمج وتحميل الملف</button>
-  <button onclick="resetForm()">🔄 إعادة تعيين</button>
+  <div id="buttonPanel">
+    <button onclick="mergeFiles()">✅ دمج وتحميل</button>
+    <button onclick="resetForm()">🔄 إعادة تعيين</button>
+  </div>
   <p id="status"></p>
-  <p class="note">⚠️ إذا ظهرت رسالة تحذير من Windows، يرجى التأكد أن الملف تم إنشاؤه محليًا وهو آمن تمامًا.</p>
+  <p class="note"⚠️ إذا ظهرت رسالة تحذير من Windows، يرجى التأكد أن الملف تم إنشاؤه محليًا وهو آمن تمامًا.</p>
 
   <script>
     window.addEventListener('load', () => {
@@ -166,7 +189,7 @@
         return;
       }
 
-      let mergedData = [];
+      const newWorkbook = XLSX.utils.book_new();
       let fileCount = 0;
 
       Array.from(files).forEach((file, i) => {
@@ -185,16 +208,13 @@
           }
 
           const sheet = workbook.Sheets[sheetName];
-          const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-          mergedData = mergedData.concat(json);
+          const cleanName = file.name.replace(/\.[^/.]+$/, "");
+          XLSX.utils.book_append_sheet(newWorkbook, sheet, cleanName);
           fileCount++;
 
           if (fileCount === files.length) {
-            const newSheet = XLSX.utils.json_to_sheet(mergedData);
-            const newWorkbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(newWorkbook, newSheet, 'Merged');
-            XLSX.writeFile(newWorkbook, 'merged.xlsx');
-            status.textContent = '✅ تم دمج الملفات بنجاح!';
+            XLSX.writeFile(newWorkbook, 'merged_sheets.xlsx');
+            status.textContent = '✅ تم دمج الملفات في أوراق منفصلة بنجاح!';
           }
         };
         reader.readAsArrayBuffer(file);
