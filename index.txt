@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>أداة دمج أوراق Excel بسهولة وسرعة</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2c3e50">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
@@ -21,14 +21,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 5vh 5vw;
+      justify-content: flex-start;
+      padding: 5vh 5vw 12vh;
     }
     h2 {
       font-size: 6vw;
       margin-bottom: 2vh;
     }
-    input[type="file"], input[type="number"], button, select {
+    input[type="file"], input[type="number"], select {
       margin: 1vh;
       padding: 2vh 2vw;
       font-size: 4vw;
@@ -37,14 +37,6 @@
       width: 90vw;
       max-width: 400px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    button {
-      background-color: #009688;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #00796b;
     }
     label {
       display: block;
@@ -62,6 +54,9 @@
       color: #7f8c8d;
       margin-top: 2vh;
     }
+    #sheetSelectors {
+      margin-top: 2vh;
+    }
     #splash {
       position: fixed;
       top: 0; left: 0;
@@ -74,20 +69,51 @@
       color: #2c3e50;
       z-index: 9999;
     }
+    .fixed-buttons {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #ffffffee;
+      display: flex;
+      justify-content: center;
+      gap: 5vw;
+      padding: 2vh 0;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+    .fixed-buttons button {
+      flex: 1;
+      max-width: 45vw;
+      font-size: 4.5vw;
+      padding: 2vh 0;
+      border-radius: 10px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .fixed-buttons button:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 <body oncontextmenu="return false">
   <div id="splash">🧩 جاري تحميل الأداة...</div>
 
   <h2>أداة دمج أوراق Excel بسهولة وسرعة</h2>
-  <input type="file" id="fileInput" multiple accept=".xlsx,.csv"><br>
+  <input type="file" id="fileInput" multiple accept=".xlsx,.csv">
   <label for="sheetIndex">🔢 رقم الورقة المطلوب دمجها (اختياري):</label>
-  <input type="number" id="sheetIndex" min="1" placeholder="مثلاً: 1"><br>
+  <input type="number" id="sheetIndex" min="1" placeholder="مثلاً: 1">
   <div id="sheetSelectors"></div>
-  <button onclick="mergeFiles()">✅ دمج وتحميل الملف</button>
-  <button onclick="resetForm()">🔄 إعادة تعيين</button>
   <p id="status"></p>
   <p class="note">⚠️ إذا ظهرت رسالة تحذير من Windows، يرجى التأكد أن الملف تم إنشاؤه محليًا وهو آمن تمامًا.</p>
+
+  <div class="fixed-buttons">
+    <button onclick="mergeFiles()">✅ دمج وتحميل الملف</button>
+    <button onclick="resetForm()">🔄 إعادة تعيين</button>
+  </div>
 
   <script>
     window.addEventListener('load', () => {
