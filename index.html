@@ -137,7 +137,7 @@
     <button onclick="resetForm()">🔄 إعادة تعيين</button>
   </div>
   <p id="status"></p>
-  <p class="note"⚠️ إذا ظهرت رسالة تحذير من Windows، يرجى التأكد أن الملف تم إنشاؤه محليًا وهو آمن تمامًا.</p>
+  <p class="note">⚠️ إذا ظهرت رسالة تحذير من Windows، يرجى التأكد أن الملف تم إنشاؤه محليًا وهو آمن تمامًا.</p>
 
   <script>
     window.addEventListener('load', () => {
@@ -208,7 +208,10 @@
           }
 
           const sheet = workbook.Sheets[sheetName];
-          const cleanName = file.name.replace(/\.[^/.]+$/, "");
+          let cleanName = file.name.replace(/\.[^/.]+$/, "");
+          if (cleanName.length > 31) {
+            cleanName = cleanName.slice(0, 28) + "_" + i;
+          }
           XLSX.utils.book_append_sheet(newWorkbook, sheet, cleanName);
           fileCount++;
 
