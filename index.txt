@@ -92,7 +92,7 @@
       background-color: #3498db;
       color: white;
       cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
     }
     .fixed-buttons button:hover {
       background-color: #2980b9;
@@ -230,3 +230,4 @@
   </script>
 </body>
 </html>
+
